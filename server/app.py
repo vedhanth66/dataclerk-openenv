@@ -8,3 +8,7 @@ def main():
         return {"status": "ok"}
 
     return app
+
+
+if __name__ == "__main__":
+    main()
