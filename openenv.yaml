@@ -1,0 +1,142 @@
+name: dataclerk
+version: "1.0.0"
+description: >
+  DataClerk is a business data analysis environment where AI agents
+  interact with a realistic SQLite e-commerce database by writing SQL queries,
+  interpreting results, and producing actionable analytical reports.
+  Tasks range from a single GROUP BY query to a multi-dimensional executive report.
+
+author: DataClerk Team
+tags:
+  - sql
+  - data-analysis
+  - business-intelligence
+  - real-world
+  - e-commerce
+
+tasks:
+  - id: revenue_analysis
+    name: Revenue by Category Analysis
+    description: >
+      Identify the top 3 product categories by total revenue for completed
+      orders in the last 6 months. List them in descending order with revenue figures.
+    difficulty: easy
+    max_steps: 8
+    reward_threshold: 0.45
+
+  - id: customer_risk_analysis
+    name: At-Risk Customer Identification
+    description: >
+      Find customers whose most recent completed order was more than 90 days ago.
+      Report the total count of at-risk customers and their average lifetime value.
+    difficulty: medium
+    max_steps: 12
+    reward_threshold: 0.35
+
+  - id: business_health_report
+    name: Comprehensive Business Health Report
+    description: >
+      Produce a multi-part executive report covering (A) support ticket resolution
+      times by priority, (B) the product category with the highest refund rate,
+      and (C) counts of high-friction customers broken down by account tier.
+    difficulty: hard
+    max_steps: 20
+    reward_threshold: 0.25
+
+observation_space:
+  type: object
+  description: SQL query interface and result viewer for a business database
+  properties:
+    task_id:
+      type: string
+      description: Identifier of the current task
+    task_description:
+      type: string
+      description: Full natural-language description of the analytical goal
+    task_hints:
+      type: array
+      items:
+        type: string
+      description: Optional hints for completing the task
+    available_tables:
+      type: array
+      items:
+        type: string
+      description: List of queryable table names
+    schema_summary:
+      type: object
+      description: >
+        Dict mapping table name to list of "column_name (TYPE)" strings
+    last_action_type:
+      type: string
+      nullable: true
+      description: The action_type of the most recent action
+    last_query:
+      type: string
+      nullable: true
+      description: The SQL query most recently executed
+    last_query_result:
+      type: object
+      nullable: true
+      description: >
+        Structured result with keys: columns (list), rows (list of lists),
+        row_count (int). Capped at 50 rows.
+    last_query_error:
+      type: string
+      nullable: true
+      description: Error message from the most recent failed query
+    query_count:
+      type: integer
+      description: Number of successful SQL queries executed this episode
+    step:
+      type: integer
+      description: Current step number (1-indexed)
+    max_steps:
+      type: integer
+      description: Maximum allowed steps for this task
+    status:
+      type: string
+      enum: [in_progress, submitted, timeout]
+      description: Current episode status
+
+action_space:
+  type: object
+  description: Actions available to the agent
+  properties:
+    action_type:
+      type: string
+      enum: [execute_sql, describe_table, list_tables, submit_answer]
+      description: Which action to take
+    sql_query:
+      type: string
+      nullable: true
+      description: SELECT query to execute (required for execute_sql)
+    table_name:
+      type: string
+      nullable: true
+      description: Table to describe (required for describe_table)
+    answer:
+      type: string
+      nullable: true
+      description: Final natural-language answer (required for submit_answer)
+
+reward_range: [0.0, 1.0]
+
+reward_description: >
+  Step rewards: +0.05 for a successful SQL query, +0.02 for a query returning
+  0 rows, -0.02 for a SQL error, +0.01 for exploration actions (list/describe),
+  -0.01 for duplicate queries (loop penalty), -0.05 timeout penalty.
+  The dominant end-of-episode reward (0.0–1.0) comes from the task grader
+  which evaluates the submitted answer against pre-computed expected values,
+  awarding partial credit for each correct insight.
+
+database_description: >
+  Realistic e-commerce SQLite database with 5 tables:
+    customers      (200 rows) — id, name, email, city, country, tier, created_at
+    products        (37 rows) — id, name, category, base_price, stock_quantity
+    orders        (1800 rows) — id, customer_id, status, total_amount, created_at
+    order_items   (4000 rows) — id, order_id, product_id, quantity, unit_price
+    support_tickets (600 rows) — id, customer_id, category, priority, status,
+                                  created_at, resolved_at
+  Data is seeded deterministically (random seed 42) so grader answers are
+  reproducible across any environment instance.
