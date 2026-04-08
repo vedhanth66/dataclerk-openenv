@@ -361,12 +361,13 @@ TASKS: Dict[str, Dict] = {
             "  2. Total revenue (rounded to 2 decimal places)\n"
             "List them in DESCENDING order by revenue.\n\n"
             "Database tables: customers, products, orders, order_items, support_tickets\n"
+            "IMPORTANT: All status values are lowercase: orders.status values are 'completed', 'refunded', 'pending'\n"
             "SQLite date tip: use date('2025-06-15', '-180 days') for the cutoff.\n\n"
             "Use execute_sql to query, then submit_answer with your findings."
         ),
         "hints": [
             "JOIN orders → order_items → products",
-            "Filter WHERE o.status = 'completed' AND o.created_at >= date('2025-06-15','-180 days')",
+            "CRITICAL: Use lowercase o.status = 'completed' (NOT 'COMPLETED') AND o.created_at >= date('2025-06-15','-180 days')",
             "GROUP BY p.category, ORDER BY revenue DESC, LIMIT 3",
         ],
     },
@@ -388,10 +389,11 @@ TASKS: Dict[str, Dict] = {
             "Submit your answer like: "
             "\"There are X at-risk customers with an average lifetime value of $Y.\"\n\n"
             "Database tables: customers, products, orders, order_items, support_tickets\n"
+            "IMPORTANT: orders.status values are lowercase: 'completed', 'refunded', 'pending'\n"
             "SQLite date tip: date('2025-06-15', '-90 days')"
         ),
         "hints": [
-            "Compute MAX(created_at) per customer from completed orders",
+            "Compute MAX(created_at) per customer WHERE status = 'completed' (lowercase!)",
             "Filter last_order < date('2025-06-15', '-90 days')",
             "Compute SUM(total_amount) per customer for LTV, then AVG across at-risk set",
             "A CTE (WITH clause) makes this cleaner",
@@ -426,7 +428,9 @@ TASKS: Dict[str, Dict] = {
             "and report the grand total.\n\n"
 
             "Submit a structured report covering all three parts.\n\n"
-            "Database tables: customers, products, orders, order_items, support_tickets"
+            "Database tables: customers, products, orders, order_items, support_tickets\n"
+            "IMPORTANT: All status values are lowercase. orders.status: 'completed','refunded','pending'. "
+            "support_tickets.status: 'resolved','closed','open','in_progress'"
         ),
         "hints": [
             "Part A: julianday() for date arithmetic on resolved_at vs created_at",
