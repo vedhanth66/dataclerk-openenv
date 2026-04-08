@@ -10,7 +10,7 @@ dependencies = [
 ]
 
 [project.scripts]
-server = "app.server:main"
+server = "server.app:main"
 
 [tool.setuptools]
 packages = ["app"]
