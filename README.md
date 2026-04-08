@@ -1,3 +1,19 @@
+---
+title: DataClerk OpenEnv
+emoji: 🗄️
+colorFrom: blue
+colorTo: green
+sdk: docker
+app_port: 7860
+tags:
+  - openenv
+  - sql
+  - data-analysis
+  - business-intelligence
+  - agent-benchmark
+  - rl
+pinned: false
+---
 # DataClerk — Business Data Analysis OpenEnv
 
 [![OpenEnv](https://img.shields.io/badge/OpenEnv-1.0-blue)](https://github.com/openenv)
