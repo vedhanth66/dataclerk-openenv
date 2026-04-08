@@ -3,6 +3,14 @@ name = "dataclerk-openenv"
 version = "0.1.0"
 description = "DataClerk OpenEnv Hackathon Submission"
 requires-python = ">=3.10"
+dependencies = [
+    "openenv-core>=0.2.0",
+    "httpx",
+    "openai"
+]
+
+[project.scripts]
+server = "app.server:app"
 
 [tool.setuptools]
-packages = []
+packages = ["app"]
