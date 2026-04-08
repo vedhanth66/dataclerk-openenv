@@ -39,8 +39,8 @@ from openai import OpenAI
 #  Configuration
 # ─────────────────────────────────────────────
 
-API_BASE_URL: str = os.getenv("API_BASE_URL", "https://router.huggingface.co/v1")
-MODEL_NAME: str   = os.getenv("MODEL_NAME",   "Qwen/Qwen2.5-72B-Instruct")
+API_BASE_URL: str = os.getenv("API_BASE_URL", "https://api-inference.huggingface.co/v1")
+MODEL_NAME: str   = os.getenv("MODEL_NAME",   "mistralai/Mistral-7B-Instruct-v0.3")
 HF_TOKEN: str     = os.getenv("HF_TOKEN", "") or os.getenv("OPENAI_API_KEY", "")
 ENV_BASE_URL: str = os.getenv("ENV_BASE_URL", "http://localhost:7860")
 
